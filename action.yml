@@ -1,0 +1,14 @@
+name: 'Optimize runner network'
+description: "Optimizes the runner's network performance by enabling the BBR TCP congestion control algorithm and the FQ queuing discipline."
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Configure TCP congestion control and queueing discipline'
+      shell: bash
+      run: |
+        sudo modprobe sch_fq
+        sudo modprobe tcp_bbr
+        sudo sysctl net.core.default_qdisc=fq
+        sudo sysctl net.ipv4.tcp_congestion_control=bbr
+        sudo tc qdisc replace dev eth0 root fq
