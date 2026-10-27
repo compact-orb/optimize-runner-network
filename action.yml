@@ -7,8 +7,11 @@ runs:
     - name: 'Configure TCP congestion control and queueing discipline'
       shell: bash
       run: |
-        sudo modprobe sch_fq
-        sudo modprobe tcp_bbr
-        sudo sysctl net.core.default_qdisc=fq
-        sudo sysctl net.ipv4.tcp_congestion_control=bbr
-        sudo tc qdisc replace dev eth0 root fq
+        sudo modprobe sch_fq || true
+        sudo modprobe tcp_bbr || true
+        sudo sysctl -w net.core.default_qdisc=fq
+        sudo sysctl -w net.ipv4.tcp_congestion_control=bbr
+        default_iface=$(ip route show default | awk '{print $5}' | head -n 1)
+        if [[ -n "${default_iface}" ]]; then
+          sudo tc qdisc replace dev "${default_iface}" root fq || true
+        fi
