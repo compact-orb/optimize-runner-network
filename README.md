@@ -10,7 +10,7 @@ A GitHub Action that optimizes the runner's network performance by enabling the 
 2. **Sets system controls**:
    - Sets default queuing discipline (`default_qdisc`) to `fq`.
    - Sets TCP congestion control (`tcp_congestion_control`) to `bbr`.
-3. **Applies queuing discipline** — Replaces the root queuing discipline of the `eth0` network interface with `fq`.
+3. **Applies queuing discipline** — Replaces the root queuing discipline of the default network interface with `fq`.
 
 ## Usage
 
@@ -18,5 +18,5 @@ Add the action as a step in your GitHub Actions workflow:
 
 ```yaml
 steps:
-    uses: compact-orb/optimize-runner-network@v1
+  - uses: compact-orb/optimize-runner-network@v1
 ```
