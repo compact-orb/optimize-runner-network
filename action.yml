@@ -1,5 +1,7 @@
 name: 'Optimize runner network'
-description: "Optimizes the runner's network performance by enabling the BBR TCP congestion control algorithm and the FQ queuing discipline."
+description: >-
+  Optimizes the runner's network performance by enabling the BBR TCP congestion
+  control algorithm and the FQ queuing discipline.
 
 runs:
   using: "composite"
@@ -8,7 +10,8 @@ runs:
       shell: bash
       run: |
         sudo modprobe --all sch_fq tcp_bbr || true
-        sudo sysctl -w net.core.default_qdisc=fq net.ipv4.tcp_congestion_control=bbr
+        sudo sysctl --write \
+          net.core.default_qdisc=fq net.ipv4.tcp_congestion_control=bbr
         default_iface=$(ip route show default | awk '{print $5; exit}')
         if [[ -n "${default_iface}" ]]; then
           sudo tc qdisc replace dev "${default_iface}" root fq || true
