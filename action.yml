@@ -1,12 +1,12 @@
 name: 'Optimize runner network'
 description: >-
-  Optimizes the runner's network performance by enabling the BBR TCP congestion
-  control algorithm and the FQ queuing discipline.
+  Enables BBR TCP congestion control and the FQ queuing discipline on the
+  runner.
 
 runs:
   using: "composite"
   steps:
-    - name: 'Configure TCP congestion control and queueing discipline'
+    - name: 'Configure TCP congestion control and queuing discipline'
       shell: bash
       run: |
         sudo modprobe --all sch_fq tcp_bbr || true

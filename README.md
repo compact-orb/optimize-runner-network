@@ -1,20 +1,22 @@
 # optimize-runner-network
 
-A GitHub Action that optimizes the runner's network performance by enabling the **BBR** TCP congestion control algorithm and the **FQ** queuing discipline.
+A GitHub Action that enables **BBR** TCP congestion control and the **FQ**
+queuing discipline on Linux runners.
 
 ## What it does
 
-1. **Loads kernel modules**:
-   - `sch_fq`: Fair Queueing traffic control scheduler.
-   - `tcp_bbr`: BBR congestion control algorithm.
-2. **Sets system controls**:
-   - Sets default queuing discipline (`default_qdisc`) to `fq`.
-   - Sets TCP congestion control (`tcp_congestion_control`) to `bbr`.
-3. **Applies queuing discipline** — Replaces the root queuing discipline of the default network interface with `fq`.
+1. **Load kernel modules**: Attempts to load `sch_fq` (Fair Queuing) and
+   `tcp_bbr` (BBR) with `modprobe`. Continues if loading fails (for example,
+   when built into the kernel).
+2. **Set `sysctl` parameters**:
+   - `net.core.default_qdisc=fq`
+   - `net.ipv4.tcp_congestion_control=bbr`
+3. **Apply queuing discipline**: Finds the default route network interface
+   and replaces its root queuing discipline with `fq` using `tc`.
 
 ## Usage
 
-Add the action as a step in your GitHub Actions workflow:
+Add this step to a Linux job in your workflow:
 
 ```yaml
 steps:
